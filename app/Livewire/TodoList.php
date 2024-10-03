@@ -31,6 +31,8 @@ class TodoList extends Component
         $this->reset("name");
 
         request()->session()->flash("success", "Success Created New Todo");
+
+        $this->resetPage();
     }
 
     public function delete(Todo $todo)
