@@ -4,12 +4,15 @@ namespace App\Livewire;
 
 use App\Models\Todo;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class TodoList extends Component
 {
+    use WithPagination;
+
     public string $name;
 
-    public string $search;
+    public string $search = '';
 
     public function create()
     {
@@ -29,7 +32,10 @@ class TodoList extends Component
     {
 
         return view('livewire.todo-list', [
-            "todos" => Todo::query()->latest()->get(),
+            "todos" => Todo::query()
+            ->latest()
+            ->where("name", "like", "%{$this->search}%")
+            ->paginate(5),
         ]);
     }
 }
