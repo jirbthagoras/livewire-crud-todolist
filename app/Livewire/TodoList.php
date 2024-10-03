@@ -14,6 +14,11 @@ class TodoList extends Component
 
     public string $search = '';
 
+    public $memek = "mek";
+
+    public $editingTodoId;
+    public $editingTodoName;
+
     public function create()
     {
         $validated = $this->validateOnly("name",[
@@ -41,6 +46,35 @@ class TodoList extends Component
         $todo->completed = !$todo->completed;
 
         $todo->save();
+    }
+
+    public function edit($todoId)
+    {
+        $this->editingTodoId = $todoId;
+        $this->editingTodoName = Todo::query()->find($todoId)->name;
+    }
+
+    public function cancelEdit()
+    {
+        $this->reset("editingTodoId", 'editingTodoName');
+    }
+
+    public function update()
+    {
+        $this->validateOnly("editingTodoName", [
+            "editingTodoName" => [
+                "required",
+                "min:3"
+            ]
+        ]);
+
+        $todo = Todo::query()
+        ->find($this->editingTodoId)
+        ->update([
+            "name" => $this->editingTodoName,
+        ]);
+
+        $this->cancelEdit();
     }
 
     public function render()
